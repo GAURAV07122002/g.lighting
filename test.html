@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Product Animation Example</title>
+<style>
+  body {
+    margin: 0;
+    font-family: "Poppins", sans-serif;
+    background: #f4f4f4;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    padding: 30px;
+  }
+
+  .brand {
+    width: 200px;
+    height: 200px;
+    cursor: pointer;
+    border-radius: 16px;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+  }
+
+  .brand:hover {
+    transform: scale(1.05);
+  }
+
+  .brand img {
+    width: 100%;
+    height: 100%;
+    object-fit:cover;
+  }
+
+  /* Fullscreen Modal */
+  .modal {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: rgba(0,0,0,0.9);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.6s ease;
+    z-index: 1000;
+  }
+
+  .modal.active {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .product-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    justify-content: center;
+    margin-top: 50px;
+    animation: fadeIn 0.8s ease forwards;
+  }
+
+  .product {
+    background: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    width: 220px;
+    text-align: center;
+    transform: translateY(50px);
+    opacity: 0;
+    animation: slideUp 0.6s ease forwards;
+  }
+
+  .product img {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    margin-bottom: 10px;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes slideUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .close-btn {
+    position: absolute;
+    top: 20px; right: 30px;
+    font-size: 28px;
+    color: white;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+
+  .close-btn:hover {
+    color: red;
+  }
+</style>
+</head>
+<body>
+
+  <!-- Thumbnails -->
+  <div class="brand" data-brand="apple"><img src="Light-Totems-jpg.webp" alt="Apple"></div>
+  <div class="brand" data-brand="samsung"><img src="samsung.jpg" alt="Samsung"></div>
+
+  <!-- Modal -->
+  <div id="productModal" class="modal">
+    <span class="close-btn">&times;</span>
+    <h1 id="brandTitle" style="color:white;"></h1>
+    <div class="product-grid" id="productGrid"></div>
+  </div>
+
+<script>
+const products = {
+  apple: [
+    { name: "iPhone 15", img: "Light-Totems-jpg.webp", feature: "A17 Pro chip, Dynamic Island" },
+    { name: "MacBook Pro", img: "macbook.jpg", feature: "M3 chip, Retina display" },
+    { name: "iPad Air", img: "ipad.jpg", feature: "Liquid Retina display" },
+  ],
+  samsung: [
+    { name: "Galaxy S24", img: "galaxy.jpg", feature: "AI features, AMOLED screen" },
+    { name: "Galaxy Tab", img: "tab.jpg", feature: "S Pen support" },
+    { name: "Galaxy Watch", img: "watch.jpg", feature: "Health tracking" },
+    { name: "Galaxy Watch", img: "watch.jpg", feature: "Health tracking" },
+  ]
+};
+
+const brands = document.querySelectorAll('.brand');
+const modal = document.getElementById('productModal');
+const grid = document.getElementById('productGrid');
+const title = document.getElementById('brandTitle');
+const closeBtn = document.querySelector('.close-btn');
+
+brands.forEach(brand => {
+  brand.addEventListener('click', () => {
+    const brandName = brand.dataset.brand;
+    title.textContent = brandName.toUpperCase();
+    grid.innerHTML = '';
+    products[brandName].forEach(p => {
+      const div = document.createElement('div');
+      div.classList.add('product');
+      div.innerHTML = `<img src="${p.img}" alt="${p.name}">
+                       <h3>${p.name}</h3>
+                       <p>${p.feature}</p>`;
+      grid.appendChild(div);
+    });
+    modal.classList.add('active');
+  });
+});
+
+closeBtn.addEventListener('click', () => modal.classList.remove('active'));
+window.addEventListener('keydown', e => { if (e.key === 'Escape') modal.classList.remove('active'); });
+</script>
+
+</body>
+</html>
